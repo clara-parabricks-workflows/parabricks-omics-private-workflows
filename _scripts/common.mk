@@ -20,7 +20,6 @@ build/:
 	mkdir -p build
 
 build/config.json: build/
-	python --version 
 	python ${scripts}/build.py -c $(config) config
 
 build/omx-ecr-helper: build/config.json

@@ -1,0 +1,22 @@
+{
+    "inputBAM": {
+        "description": "Path to the input BAM/CRAM file to convert to fastq.gz",
+        "optional": false               
+    },
+    "inputBAI": {
+        "description": "Path to the input BAI file to convert to fastq.gz",
+        "optional": false               
+    },
+    "inputKnownSitesVCF": {
+        "description": "Path to a known indels file. The file must be in vcf.gz format.",
+        "optional": true               
+    },
+    "ecr_registry": {
+        "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com",
+        "optional": false
+    },
+    "aws_region": {
+        "description": "aws region (e.g. us-east-1). must match were source data is located and where workflow is executed",
+        "optional": false
+    }
+}

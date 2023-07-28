@@ -1,0 +1,50 @@
+{
+    "inputFASTQ_1": {
+        "description": "Input Fastq 1",
+        "optional": false               
+    },
+    "inputFASTQ_2": {
+        "description": "Input Fastq 2",
+        "optional": false               
+    },
+    "inputRecal": {
+        "description": "Recalibration file",
+        "optional": true               
+    },
+    "intervalFile": {
+        "description": "Interval file",
+        "optional": true               
+    },
+    "gvcfMode": {
+        "description": "GVCF Mode",
+        "optional": true               
+    },
+    "useBestPractices": {
+        "description": "Uses best practices",
+        "optional": true               
+    },
+    "haplotypecallerPassthroughOptions": {
+        "description": "Haplotype Caller Pass Through Options",
+        "optional": true               
+    },
+    "annotationArgs": {
+        "description": "Annotation Arguments",
+        "optional": true               
+    }, 
+    "inputKnownSitesVCF": {
+        "description": "Known sites VCF",
+        "optional": true               
+    },
+    "inputKnownSitesTBI": {
+        "description": "Known sites TBI",
+        "optional": true               
+    },
+    "ecr_registry": {
+        "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com",
+        "optional": false
+    },
+    "aws_region": {
+        "description": "aws region (e.g. us-east-1). must match were source data is located and where workflow is executed",
+        "optional": false
+    }                 
+}

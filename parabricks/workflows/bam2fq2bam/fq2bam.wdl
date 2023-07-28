@@ -19,8 +19,9 @@ task fq2bam {
         File inputRefTarball
 
         String? pbPATH = "pbrun"
-        String? pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
         String? tmpDir = "tmp_fq2bam"
+
+        String docker
     }
 
     String best_practice_args = if use_best_practices then "--bwa-options \" -Y -K 100000000 \" " else ""
@@ -51,6 +52,7 @@ task fq2bam {
     }
 
     runtime {
+        docker: docker
         acceleratorType: "nvidia-tesla-t4"
         acceleratorCount: 4
         cpu: 48
@@ -77,8 +79,10 @@ workflow ClaraParabricks_fq2bam {
         File inputRefTarball
 
         String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
         String tmpDir = "tmp_fq2bam"
+
+        String docker
+
     }
     
     call fq2bam {
@@ -95,8 +99,8 @@ workflow ClaraParabricks_fq2bam {
             use_best_practices=use_best_practices,
             inputRefTarball=inputRefTarball,
             pbPATH=pbPATH,
-            pbDocker=pbDocker,
-            tmpDir=tmpDir
+            tmpDir=tmpDir,
+            docker=docker
     }
 
     output {

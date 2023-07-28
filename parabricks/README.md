@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## Step 1: Testing
 
-Use the steps below to verify execution of these pipelines AWS HealthOmics as needed. Data for these tests are available in the following regions:
+Use the steps below to verify execution of these pipelines Amazon Omics as needed. Data for these tests are available in the following regions:
 
 - us-east-1
 - us-west-2
@@ -33,7 +33,7 @@ Use the steps below to verify execution of these pipelines AWS HealthOmics as ne
 - eu-central-1
 - ap-southeast-1
 
-By default, workflow runs will use the region that is configured for the `default` profile via the AWS CLI. You can override this by etting the `region` option in `amazon-omics-tutorials/example-workflows/_conf/default.ini`.
+By default, workflow runs will use the region that is configured for the `default` profile via the AWS CLI. You can override this by editing the `region` option in `amazon-omics-tutorials/example-workflows/_conf/default.ini`.
 
 To run a specific workflow run the following from root of this example set (e.g. at the same location this README file is):
 

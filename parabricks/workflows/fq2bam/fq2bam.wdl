@@ -86,7 +86,7 @@ workflow ClaraParabricks_fq2bam {
 
     }
 
-    String docker = ecr_registry + "/parabricks:omics"
+    String docker = ecr_registry + "/parabricks-omics"
     
     call fq2bam {
         input:

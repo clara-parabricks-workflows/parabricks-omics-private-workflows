@@ -1,4 +1,8 @@
 {
+    "inputRefTarball": {
+        "description": "Path to the reference tarball",
+        "optional": false               
+    },
     "inputFASTQ_1": {
         "description": "Path to the first pair-ended FASTQ file",
         "optional": false               

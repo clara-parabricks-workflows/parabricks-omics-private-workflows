@@ -8,16 +8,16 @@ task bam2fq {
     input {
         File inputBAM
         File inputBAI
-        File? originalRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar" # Required for CRAM input
-        String? ref = "Homo_sapiens_assembly38.fasta" # Name of FASTA reference file, required for CRAM input
+        File? inputRefTarball 
         String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
+        String docker 
     }
 
+    String ref = basename(inputRefTarball, ".tar")
     String outbase = basename(inputBAM, ".bam")
 
     command {
-        ~{"tar xvf " + originalRefTarball + " && "}\
+        ~{"tar xvf " + inputRefTarball + " && "}\
         time ~{pbPATH} bam2fq \
             --in-bam ~{inputBAM} \
             --out-prefix ~{outbase} \
@@ -30,6 +30,7 @@ task bam2fq {
     }
 
     runtime {
+        docker: docker
         acceleratorType: "nvidia-tesla-t4-a10g"
         acceleratorCount: 4
         cpu: 48
@@ -48,26 +49,24 @@ workflow ClaraParabricks_bam2fq2bam {
         File inputBAI
         File? inputKnownSitesVCF
         File? inputKnownSitesTBI
-        File? originalRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar" # for CRAM input
-        String? ref = "Homo_sapiens_assembly38.fasta" # Name of FASTA reference file, required for CRAM input
+        File? inputRefTarball
         String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
         String tmpDir = "tmp_fq2bam"
+
+        String ecr_registry
+        String aws_region
     }
 
-    if (defined(originalRefTarball)){
-        ref = basename(select_first([originalRefTarball]), ".tar")
-    }
+    String docker = ecr_registry + "/parabricks-omics"
 
     ## Run the BAM -> FASTQ conversion
     call bam2fq {
         input:
             inputBAM=inputBAM,
             inputBAI=inputBAI,
-            originalRefTarball=originalRefTarball,
-            ref=ref,
+            inputRefTarball=inputRefTarball,
             pbPATH=pbPATH,
-            pbDocker=pbDocker
+            docker=docker
     }
 
     ## Remap the reads from the bam2fq stage to the new reference to produce a BAM file.
@@ -75,12 +74,12 @@ workflow ClaraParabricks_bam2fq2bam {
         input:
             inputFASTQ_1=bam2fq.outputFASTQ_1,
             inputFASTQ_2=bam2fq.outputFASTQ_2,
-            originalRefTarball=originalRefTarball,
+            inputRefTarball=inputRefTarball,
             inputKnownSitesVCF=inputKnownSitesVCF,
             inputKnownSitesTBI=inputKnownSitesTBI,
             pbPATH=pbPATH,
             tmpDir=tmpDir,
-            pbDocker=pbDocker
+            docker=docker
     }
 
     output {

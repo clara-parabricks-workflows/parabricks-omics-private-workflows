@@ -7,14 +7,14 @@ task haplotypecaller {
         File inputBAM
         File inputBAI
         File? inputRecal
-        File inputRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
+        File inputRefTarball
         String pbPATH = "pbrun"
         File? intervalFile
         Boolean gvcfMode = false
         Boolean useBestPractices = false
         String haplotypecallerPassthroughOptions = ""
         String annotationArgs = ""
-        String? pbDocker
+        String? docker
     }
 
     String outbase = basename(inputBAM, ".bam")
@@ -48,43 +48,7 @@ task haplotypecaller {
     }
 
     runtime {
-        acceleratorType: "nvidia-tesla-t4"
-        acceleratorCount: 4
-        cpu: 48
-        memory: "192GB"
-    }
-}
-
-task deepvariant {
-    input {
-        File inputBAM
-        File inputBAI
-        File inputRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
-        String pbPATH = "pbrun"
-        String? pbDocker
-        Boolean gvcfMode = false
-    }
-
-    String ref = basename(inputRefTarball, ".tar")
-    String localTarball = basename(inputRefTarball)
-    String outbase = basename(inputBAM, ".bam")
-
-    String outVCF = outbase + ".deepvariant" + (if gvcfMode then '.g' else '') + ".vcf"
-
-    command {
-        mv ~{inputRefTarball} ${localTarball} && \
-        time tar xvf ~{localTarball} && \
-        time ${pbPATH} deepvariant \
-        ~{if gvcfMode then "--gvcf " else ""} \
-        --ref ${ref} \
-        --in-bam ${inputBAM} \
-        --out-variants ~{outVCF} 
-        }
-
-    output {
-        File deepvariantVCF = "~{outVCF}"
-    }
-    runtime {
+        docker: docker
         acceleratorType: "nvidia-tesla-t4"
         acceleratorCount: 4
         cpu: 48
@@ -97,10 +61,9 @@ workflow ClaraParabricks_Germline {
         File inputFASTQ_1
         File inputFASTQ_2
         File? inputRecal
-        File inputRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
+        File inputRefTarball
         String pbPATH = "pbrun"
         String tmpDir_fq2bam = "tmp_fq2bam"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
 
         ## Run both DeepVariant and HaplotypeCaller in gVCF mode
         Boolean gvcfMode = false
@@ -111,7 +74,12 @@ workflow ClaraParabricks_Germline {
 
         ## HaplotypeCaller Runtime Args
         String? haplotypecallerPassthroughOptions
+
+        String ecr_registry
+        String aws_region
     }
+
+    String docker = ecr_registry + "/parabricks-omics"
 
     call ToBam.fq2bam as fq2bam {
         input:
@@ -122,7 +90,7 @@ workflow ClaraParabricks_Germline {
             inputKnownSitesTBI=inputKnownSitesTBI,
             pbPATH=pbPATH,
             tmpDir=tmpDir_fq2bam,
-            pbDocker=pbDocker
+            docker=docker
     }
 
     call haplotypecaller {
@@ -134,7 +102,7 @@ workflow ClaraParabricks_Germline {
             pbPATH=pbPATH,
             gvcfMode=gvcfMode,
             haplotypecallerPassthroughOptions=haplotypecallerPassthroughOptions,
-            pbDocker=pbDocker,
+            docker=docker,
     }
 
     output {

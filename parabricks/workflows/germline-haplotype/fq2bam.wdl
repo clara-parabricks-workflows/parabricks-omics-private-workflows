@@ -5,29 +5,30 @@ task fq2bam {
     input {
         File inputFASTQ_1
         File inputFASTQ_2
-        File inputRefTarball
+        Boolean? gvcfMode
 
         String readGroup_sampleName = "SAMPLE"
-        String? readGroup_libraryName = "LIB1"
+        String readGroup_libraryName = "LIB1"
         String readGroup_ID = "RG1"
-        String? readGroup_platformName = "ILLUMINA"
-        String? readGroup_PU = "unit1"
+        String readGroup_platformName = "ILLUMINA"
+        String readGroup_PU = "unit1"
 
         File? inputKnownSitesVCF
-        File? inputKnownSitesTBI
         Boolean use_best_practices = false
 
-        String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
-        String tmpDir = "tmp_fq2bam"
+        File inputRefTarball
+
+        String? pbPATH = "pbrun"
+        String? tmpDir = "tmp_fq2bam"
+
+        String docker
     }
 
     String best_practice_args = if use_best_practices then "--bwa-options \" -Y -K 100000000 \" " else ""
-
     String rgID = if readGroup_sampleName == "SAMPLE" then readGroup_ID else readGroup_sampleName + "-" + readGroup_ID
-
     String ref = basename(inputRefTarball, ".tar")
     String outbase = basename(basename(basename(basename(inputFASTQ_1, ".gz"), ".fastq"), ".fq"), "_1")
+
     command {
         set -e
         set -x
@@ -41,7 +42,8 @@ task fq2bam {
         ~{best_practice_args} \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + outbase + ".pb.BQSR-REPORT.txt"} \
-        --out-bam ~{outbase}.pb.bam 
+        --out-bam ~{outbase}.pb.bam \
+        --low-memory
     }
 
     output {
@@ -51,6 +53,7 @@ task fq2bam {
     }
 
     runtime {
+        docker: docker
         acceleratorType: "nvidia-tesla-t4"
         acceleratorCount: 4
         cpu: 48
@@ -63,33 +66,45 @@ workflow ClaraParabricks_fq2bam {
     input {
         File inputFASTQ_1
         File inputFASTQ_2
+        Boolean? gvcfMode 
+
         String? readGroup_sampleName = "SAMPLE"
         String? readGroup_libraryName = "LIB1"
         String? readGroup_ID = "RG1"
         String? readGroup_platformName = "ILMN"
         String? readGroup_PU = "Barcode1"
-        File inputRefTarball
+
         File? inputKnownSitesVCF
-        File? inputKnownSitesTBI
+        Boolean? use_best_practices
+
+        File inputRefTarball
+
         String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
         String tmpDir = "tmp_fq2bam"
+
+        String ecr_registry
+        String aws_region
+
     }
+
+    String docker = ecr_registry + "/parabricks-omics"
     
     call fq2bam {
         input:
             inputFASTQ_1=inputFASTQ_1,
             inputFASTQ_2=inputFASTQ_2,
-            inputRefTarball=inputRefTarball,
-            inputKnownSitesVCF=inputKnownSitesVCF,
-            inputKnownSitesTBI=inputKnownSitesTBI,
-            pbPATH=pbPATH,
+            gvcfMode=gvcfMode,
             readGroup_sampleName=readGroup_sampleName,
             readGroup_libraryName=readGroup_libraryName,
             readGroup_ID=readGroup_ID,
             readGroup_platformName=readGroup_platformName,
-            pbDocker=pbDocker,
-            tmpDir=tmpDir
+            readGroup_PU=readGroup_PU,
+            inputKnownSitesVCF=inputKnownSitesVCF,
+            use_best_practices=use_best_practices,
+            inputRefTarball=inputRefTarball,
+            pbPATH=pbPATH,
+            tmpDir=tmpDir,
+            docker=docker
     }
 
     output {

@@ -7,14 +7,14 @@ task fq2bam {
         File inputFASTQ_2
         Boolean? gvcfMode
 
-        String? readGroup_sampleName = "SAMPLE"
-        String? readGroup_libraryName = "LIB1"
-        String? readGroup_ID = "RG1"
-        String? readGroup_platformName = "ILLUMINA"
-        String? readGroup_PU = "unit1"
+        String readGroup_sampleName = "SAMPLE"
+        String readGroup_libraryName = "LIB1"
+        String readGroup_ID = "RG1"
+        String readGroup_platformName = "ILLUMINA"
+        String readGroup_PU = "unit1"
 
         File? inputKnownSitesVCF
-        Boolean? use_best_practices = false
+        Boolean use_best_practices = false
 
         File inputRefTarball
 
@@ -42,7 +42,8 @@ task fq2bam {
         ~{best_practice_args} \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + outbase + ".pb.BQSR-REPORT.txt"} \
-        --out-bam ~{outbase}.pb.bam 
+        --out-bam ~{outbase}.pb.bam \
+        --low-memory
     }
 
     output {
@@ -81,9 +82,12 @@ workflow ClaraParabricks_fq2bam {
         String pbPATH = "pbrun"
         String tmpDir = "tmp_fq2bam"
 
-        String docker
+        String ecr_registry
+        String aws_region
 
     }
+
+    String docker = ecr_registry + "/parabricks-omics"
     
     call fq2bam {
         input:

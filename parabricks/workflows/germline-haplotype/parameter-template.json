@@ -1,4 +1,8 @@
 {
+    "inputRefTarball": {
+        "description": "Path to the reference tarball",
+        "optional": false               
+    },
     "inputFASTQ_1": {
         "description": "Input Fastq 1",
         "optional": false               

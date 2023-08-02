@@ -42,7 +42,8 @@ task fq2bam {
         ~{best_practice_args} \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + outbase + ".pb.BQSR-REPORT.txt"} \
-        --out-bam ~{outbase}.pb.bam 
+        --out-bam ~{outbase}.pb.bam \
+        --low-memory
     }
 
     output {

@@ -1,4 +1,8 @@
-{
+{    
+    "inputRefTarball": {
+        "description": "Path to the reference tarball",
+        "optional": false               
+    },
     "inputBAM": {
         "description": "Path to the input BAM/CRAM file to convert to fastq.gz",
         "optional": false               

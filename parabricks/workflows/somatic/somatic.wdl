@@ -7,7 +7,7 @@ task somatic {
         File tumorInputFASTQ_2
         File normalInputFASTQ_1
         File normalInputFASTQ_2
-        File inputRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
+        File inputRefTarball
 
         String tumorReadGroup_sampleName = "SAMPLE_TUMOR"
         String? tumorReadGroup_libraryName = "LIB1"
@@ -26,7 +26,7 @@ task somatic {
         Boolean use_best_practices = false
 
         String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
+        String docker
         String tmpDir = "tmp_fq2bam"
 
     }
@@ -67,6 +67,7 @@ task somatic {
     }
 
     runtime {
+        docker: docker
         acceleratorType: "nvidia-tesla-t4"
         acceleratorCount: 4
         cpu: 48
@@ -81,7 +82,7 @@ workflow ClaraParabricks_somatic {
         File tumorInputFASTQ_2
         File normalInputFASTQ_1
         File normalInputFASTQ_2
-        File inputRefTarball = "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
+        File inputRefTarball
 
         String tumorReadGroup_sampleName = "SAMPLE_TUMOR"
         String? tumorReadGroup_libraryName = "LIB1"
@@ -98,7 +99,7 @@ workflow ClaraParabricks_somatic {
         File? inputKnownSitesVCF
         File? inputKnownSitesTBI
         String pbPATH = "pbrun"
-        String pbDocker = "SERVICE_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/omics/shared/clara-parabricks:4.0.0-1"
+        String docker
         String tmpDir = "tmp_fq2bam"
     }
     
@@ -122,7 +123,7 @@ workflow ClaraParabricks_somatic {
             normalReadGroup_ID=normalReadGroup_ID,
             normalReadGroup_platformName=normalReadGroup_platformName,
             normalReadGroup_PU=normalReadGroup_PU,
-            pbDocker=pbDocker,
+            docker=docker,
             tmpDir=tmpDir
     }
 

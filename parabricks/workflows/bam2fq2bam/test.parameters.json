@@ -1,5 +1,5 @@
 {
   "inputBAM": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/SRR7890824_5x.bam",
   "inputBAI": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/SRR7890824_5x.bam.bai",
-  "inputRefTarball": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
+  "inputRefTarball": "s3://omics-{{region}}/Homo_sapiens_assembly38.fasta.tar"
 }

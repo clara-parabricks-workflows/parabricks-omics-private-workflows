@@ -45,7 +45,6 @@ workflow ClaraParabricks_Germline {
     input {
         File inputFASTQ_1
         File inputFASTQ_2
-        File? inputRecal
         File inputRefTarball
         String pbPATH = "pbrun"
 
@@ -53,8 +52,14 @@ workflow ClaraParabricks_Germline {
         Boolean gvcfMode = false
 
         ## Fq2bam Runtime Args 
+        String? readGroup_sampleName = "SAMPLE"
+        String? readGroup_libraryName = "LIB1"
+        String? readGroup_ID = "RG1"
+        String? readGroup_platformName = "ILMN"
+        String? readGroup_PU = "Barcode1"
+
         File? inputKnownSitesVCF
-        File? inputKnownSitesTBI
+        Boolean? use_best_practices
 
         String ecr_registry
         String aws_region
@@ -66,12 +71,18 @@ workflow ClaraParabricks_Germline {
         input:
             inputFASTQ_1=inputFASTQ_1,
             inputFASTQ_2=inputFASTQ_2,
-            inputRefTarball=inputRefTarball,
+            gvcfMode=gvcfMode,
+            readGroup_sampleName=readGroup_sampleName,
+            readGroup_libraryName=readGroup_libraryName,
+            readGroup_ID=readGroup_ID,
+            readGroup_platformName=readGroup_platformName,
+            readGroup_PU=readGroup_PU,
             inputKnownSitesVCF=inputKnownSitesVCF,
-            inputKnownSitesTBI=inputKnownSitesTBI,
+            use_best_practices=use_best_practices,
+            inputRefTarball=inputRefTarball,
             pbPATH=pbPATH,
             tmpDir=tmpDir_fq2bam,
-            pbDocker=pbDocker
+            docker=docker
     }
 
     call deepvariant {
@@ -81,7 +92,7 @@ workflow ClaraParabricks_Germline {
             inputRefTarball=inputRefTarball,
             pbPATH=pbPATH,
             gvcfMode=gvcfMode,
-            pbDocker=pbDocker
+            docker=docker
     }
 
     output {

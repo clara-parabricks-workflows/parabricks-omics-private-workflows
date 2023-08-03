@@ -39,10 +39,6 @@
         "description": "Path to a known indels file. The file must be in vcf.gz format.",
         "optional": true               
     },
-    "inputKnownSitesTBI": {
-        "description": "Path to a known indels file. The file must be in vcf.gz format.",
-        "optional": true               
-    },
     "use_best_practices": {
         "description": "Uses best practices BWA options (--bwa-options -Y -K 100000000)",
         "optional": true               

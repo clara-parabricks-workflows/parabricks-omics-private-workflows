@@ -47,11 +47,19 @@ workflow ClaraParabricks_bam2fq2bam {
     input {
         File inputBAM
         File inputBAI
-        File? inputKnownSitesVCF
-        File? inputKnownSitesTBI
-        File? inputRefTarball
+        File inputRefTarball
         String pbPATH = "pbrun"
-        String tmpDir = "tmp_fq2bam"
+        String tmpDir_fq2bam = "tmp_fq2bam"
+
+        ## Fq2bam Args 
+        String? readGroup_sampleName = "SAMPLE"
+        String? readGroup_libraryName = "LIB1"
+        String? readGroup_ID = "RG1"
+        String? readGroup_platformName = "ILMN"
+        String? readGroup_PU = "Barcode1"
+        File? inputKnownSitesVCF
+        Boolean? use_best_practices
+        Boolean gvcfMode = false
 
         String ecr_registry
         String aws_region
@@ -74,11 +82,17 @@ workflow ClaraParabricks_bam2fq2bam {
         input:
             inputFASTQ_1=bam2fq.outputFASTQ_1,
             inputFASTQ_2=bam2fq.outputFASTQ_2,
-            inputRefTarball=inputRefTarball,
+            gvcfMode=gvcfMode,
+            readGroup_sampleName=readGroup_sampleName,
+            readGroup_libraryName=readGroup_libraryName,
+            readGroup_ID=readGroup_ID,
+            readGroup_platformName=readGroup_platformName,
+            readGroup_PU=readGroup_PU,
             inputKnownSitesVCF=inputKnownSitesVCF,
-            inputKnownSitesTBI=inputKnownSitesTBI,
+            use_best_practices=use_best_practices,
+            inputRefTarball=inputRefTarball,
             pbPATH=pbPATH,
-            tmpDir=tmpDir,
+            tmpDir=tmpDir_fq2bam,
             docker=docker
     }
 

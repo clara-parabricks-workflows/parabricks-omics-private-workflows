@@ -47,17 +47,17 @@ workflow ClaraParabricks_Germline {
         File inputFASTQ_2
         File inputRefTarball
         String pbPATH = "pbrun"
-
         String tmpDir_fq2bam = "tmp_fq2bam"
+
+        ## DeepVariant Args
         Boolean gvcfMode = false
 
-        ## Fq2bam Runtime Args 
+        ## Fq2bam Args 
         String? readGroup_sampleName = "SAMPLE"
         String? readGroup_libraryName = "LIB1"
         String? readGroup_ID = "RG1"
         String? readGroup_platformName = "ILMN"
         String? readGroup_PU = "Barcode1"
-
         File? inputKnownSitesVCF
         Boolean? use_best_practices
 

@@ -22,7 +22,6 @@ task somatic {
         String? normalReadGroup_PU = "unit1"
 
         File? inputKnownSitesVCF
-        File? inputKnownSitesTBI
         Boolean use_best_practices = false
 
         String pbPATH = "pbrun"
@@ -39,6 +38,7 @@ task somatic {
     String ref = basename(inputRefTarball, ".tar")
     String tumorOutbase = basename(basename(basename(basename(tumorInputFASTQ_1, ".gz"), ".fastq"), ".fq"), "_1")
     String normalOutbase = basename(basename(basename(basename(normalInputFASTQ_1, ".gz"), ".fastq"), ".fq"), "_1")
+
     command {
         set -e
         set -x
@@ -84,24 +84,27 @@ workflow ClaraParabricks_somatic {
         File normalInputFASTQ_2
         File inputRefTarball
 
-        String tumorReadGroup_sampleName = "SAMPLE_TUMOR"
+        String? tumorReadGroup_sampleName = "SAMPLE_TUMOR"
         String? tumorReadGroup_libraryName = "LIB1"
-        String tumorReadGroup_ID = "RG1"
+        String? tumorReadGroup_ID = "RG1"
         String? tumorReadGroup_platformName = "ILLUMINA"
         String? tumorReadGroup_PU = "unit1"
 
-        String normalReadGroup_sampleName = "SAMPLE_NORMAL"
+        String? normalReadGroup_sampleName = "SAMPLE_NORMAL"
         String? normalReadGroup_libraryName = "LIB1"
-        String normalReadGroup_ID = "RG1"
+        String? normalReadGroup_ID = "RG1"
         String? normalReadGroup_platformName = "ILLUMINA"
         String? normalReadGroup_PU = "unit1"
 
         File? inputKnownSitesVCF
-        File? inputKnownSitesTBI
         String pbPATH = "pbrun"
-        String docker
-        String tmpDir = "tmp_fq2bam"
+        String tmpDir = "tmp_somatic"
+
+        String ecr_registry
+        String aws_region
     }
+
+    String docker = ecr_registry + "/parabricks-omics"
     
     call somatic {
         input:
@@ -111,7 +114,6 @@ workflow ClaraParabricks_somatic {
             normalInputFASTQ_2=normalInputFASTQ_2,
             inputRefTarball=inputRefTarball,
             inputKnownSitesVCF=inputKnownSitesVCF,
-            inputKnownSitesTBI=inputKnownSitesTBI,
             pbPATH=pbPATH,
             tumorReadGroup_sampleName=tumorReadGroup_sampleName,
             tumorReadGroup_libraryName=tumorReadGroup_libraryName,

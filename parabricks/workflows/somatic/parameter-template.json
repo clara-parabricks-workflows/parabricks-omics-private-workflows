@@ -1,4 +1,8 @@
 {
+    "inputRefTarball": {
+        "description": "Path to the reference tarball",
+        "optional": false               
+    },
     "tumorFASTQ_1": {
         "description": "Tumor FASTQ 1",
         "optional": false               
@@ -15,36 +19,56 @@
         "description": "Normal FASTQ 2",
         "optional": false               
     },
-    "intervalFile": {
-        "description": "Interval file",
+    "tumorReadGroup_sampleName": {
+        "description": "Tumor Read Group Sample Name",
         "optional": true               
     },
-    "tumorBQSR": {
-        "description": "Tumor BQSR",
+    "tumorReadGroup_libraryName": {
+        "description": "Tumor Read Group Library Name",
         "optional": true               
     },
-    "normalBQSR": {
-        "description": "Normal BQSR",
+    "tumorReadGroup_ID": {
+        "description": "Tumor Read Group ID",
         "optional": true               
     },
-    "ponFile": {
-        "description": "Pon File",
+    "tumorReadGroup_platformName": {
+        "description": "Tumor Read Group Platform Name",
         "optional": true               
     },
-    "ponVCF": {
-        "description": "Pon VCF",
+    "tumorReadGroup_PU": {
+        "description": "Tumor Read Group PU",
         "optional": true               
     },
-    "ponTBI": {
-        "description": "Pon TBI",
+    "normalReadGroup_sampleName": {
+        "description": "Normal Read Group Sample Name",
+        "optional": true               
+    },
+    "normalReadGroup_libraryName": {
+        "description": "Normal Read Group Library Name",
+        "optional": true               
+    },
+    "normalReadGroup_ID": {
+        "description": "Normal Read Group ID",
+        "optional": true               
+    },
+    "normalReadGroup_platformName": {
+        "description": "Normal Read Group Platform Name",
+        "optional": true               
+    },
+    "normalReadGroup_PU": {
+        "description": "Normal Read Group PU",
+        "optional": true               
+    },
+    "inputKnownSitesVCF": {
+        "description": "Path to a known indels file. The file must be in vcf.gz format.",
         "optional": true               
     },
     "ecr_registry": {
-        "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com",
+        "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com)",
         "optional": false
     },
     "aws_region": {
-    "description": "aws region (e.g. us-east-1). must match were source data is located and where workflow is executed",
-    "optional": false
+        "description": "aws region (e.g. us-east-1). must match were source data is located and where workflow is executed",
+        "optional": false
     }               
 }

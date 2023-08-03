@@ -11,10 +11,38 @@
         "description": "Path to the input BAI file to convert to fastq.gz",
         "optional": false               
     },
+    "gvcfMode": {
+        "description": "Generate variant calls in .gvcf format",
+        "optional": true               
+    },
+    "readGroup_sampleName": {
+        "description": "Read Group Sample Name",
+        "optional": true               
+    },
+    "readGroup_libraryName": {
+        "description": "Read Group Library Name",
+        "optional": true               
+    },
+    "readGroup_ID": {
+        "description": "Read Group ID",
+        "optional": true               
+    },
+    "readGroup_platformName": {
+        "description": "Read Group Platform Name",
+        "optional": true               
+    },
+    "readGroup_PU": {
+        "description": "Read Group PU",
+        "optional": true               
+    },
     "inputKnownSitesVCF": {
         "description": "Path to a known indels file. The file must be in vcf.gz format.",
         "optional": true               
     },
+    "use_best_practices": {
+        "description": "Uses best practices BWA options (--bwa-options -Y -K 100000000)",
+        "optional": true               
+    }, 
     "ecr_registry": {
         "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com",
         "optional": false

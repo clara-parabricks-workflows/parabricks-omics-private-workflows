@@ -54,7 +54,8 @@ task somatic {
         ~{best_practice_args} \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + tumorOutbase + ".pb.BQSR-REPORT.txt"} \
-        --out-vcf ~{tumorOutbase}.vcf
+        --out-vcf ~{tumorOutbase}.vcf \
+        --low-memory
     }
 
     output {
@@ -78,10 +79,10 @@ task somatic {
 workflow ClaraParabricks_somatic {
 
     input {
-        File tumorInputFASTQ_1
-        File tumorInputFASTQ_2
-        File normalInputFASTQ_1
-        File normalInputFASTQ_2
+        File tumorFASTQ_1
+        File tumorFASTQ_2
+        File normalFASTQ_1
+        File normalFASTQ_2
         File inputRefTarball
 
         String? tumorReadGroup_sampleName = "SAMPLE_TUMOR"
@@ -108,10 +109,10 @@ workflow ClaraParabricks_somatic {
     
     call somatic {
         input:
-            tumorInputFASTQ_1=tumorInputFASTQ_1,
-            tumorInputFASTQ_2=tumorInputFASTQ_2,
-            normalInputFASTQ_1=normalInputFASTQ_1,
-            normalInputFASTQ_2=normalInputFASTQ_2,
+            tumorInputFASTQ_1=tumorFASTQ_1,
+            tumorInputFASTQ_2=tumorFASTQ_2,
+            normalInputFASTQ_1=normalFASTQ_1,
+            normalInputFASTQ_2=normalFASTQ_2,
             inputRefTarball=inputRefTarball,
             inputKnownSitesVCF=inputKnownSitesVCF,
             pbPATH=pbPATH,

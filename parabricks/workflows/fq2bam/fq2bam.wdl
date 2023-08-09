@@ -82,10 +82,13 @@ workflow ClaraParabricks_fq2bam {
         String pbPATH = "pbrun"
         String tmpDir = "tmp_fq2bam"
 
-        String docker
+        String ecr_registry
+        String aws_region
 
     }
 
+    String docker = ecr_registry + "/parabricks:omics"
+    
     call fq2bam {
         input:
             inputFASTQ_1=inputFASTQ_1,

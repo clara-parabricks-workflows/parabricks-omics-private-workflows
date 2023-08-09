@@ -43,8 +43,12 @@
         "description": "Uses best practices BWA options (--bwa-options -Y -K 100000000)",
         "optional": true               
     }, 
-    "docker": {
-        "description": "URI for the Parabricks Docker image (ex. nvcr.io/nvidia/clara/clara-parabricks:omics-4.1.1)",
+    "ecr_registry": {
+        "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com)",
+        "optional": false
+    },
+    "aws_region": {
+        "description": "aws region (e.g. us-east-1). must match were source data is located and where workflow is executed",
         "optional": false
     }
 }

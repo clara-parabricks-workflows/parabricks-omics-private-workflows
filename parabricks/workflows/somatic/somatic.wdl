@@ -104,7 +104,7 @@ workflow ClaraParabricks_somatic {
         String aws_region
     }
 
-    String docker = ecr_registry + "/parabricks-omics"
+    String docker = ecr_registry + "/parabricks:omics"
     
     call somatic {
         input:

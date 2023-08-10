@@ -1,7 +1,0 @@
-{
-  "tumorFASTQ_1": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/SRR7890824_5x_1.fastq.gz",
-  "tumorFASTQ_2": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/SRR7890824_5x_2.fastq.gz",
-  "normalFASTQ_1": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/SRR7890827_5x_1.fastq.gz",
-  "normalFASTQ_2": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/SRR7890827_5x_2.fastq.gz",
-  "inputRefTarball": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
-}

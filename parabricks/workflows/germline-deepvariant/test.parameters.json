@@ -1,0 +1,5 @@
+{
+  "inputFASTQ_1": "s3://omics-{{region}}/sample-inputs/4974161/HG002-NA24385-pFDA_S2_L002_R1_001-5x.fastq.gz",
+  "inputFASTQ_2": "s3://omics-{{region}}/sample-inputs/4974161/HG002-NA24385-pFDA_S2_L002_R2_001-5x.fastq.gz",
+  "inputRefTarball": "s3://omics-{{region}}/Homo_sapiens_assembly38.fasta.tar"
+}

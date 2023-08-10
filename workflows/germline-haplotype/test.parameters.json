@@ -1,5 +1,0 @@
-{
-  "inputFASTQ_1": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/HG002-NA24385-pFDA_S2_L002_R1_001-5x.fastq.gz",
-  "inputFASTQ_2": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/HG002-NA24385-pFDA_S2_L002_R2_001-5x.fastq.gz",
-  "inputRefTarball": "s3://SAMPLE_DATA_BUCKET/WORKFLOW_ID/Homo_sapiens_assembly38.fasta.tar"
-}

@@ -1,0 +1,66 @@
+{
+    "inputRefTarball": {
+        "description": "Path to the reference tarball",
+        "optional": false               
+    },
+    "inputFASTQ_1": {
+        "description": "Input Fastq 1",
+        "optional": false               
+    },
+    "inputFASTQ_2": {
+        "description": "Input Fastq 2",
+        "optional": false               
+    },
+    "inputRecal": {
+        "description": "Recalibration file",
+        "optional": true               
+    },
+    "gvcfMode": {
+        "description": "GVCF Mode",
+        "optional": true               
+    },
+    "use_best_practices": {
+        "description": "Uses best practices",
+        "optional": true               
+    },
+    "haplotypecallerPassthroughOptions": {
+        "description": "Haplotype Caller Pass Through Options",
+        "optional": true               
+    },
+    "annotationArgs": {
+        "description": "Annotation Arguments",
+        "optional": true               
+    }, 
+    "readGroup_sampleName": {
+        "description": "Read Group Sample Name",
+        "optional": true               
+    },
+    "readGroup_libraryName": {
+        "description": "Read Group Library Name",
+        "optional": true               
+    },
+    "readGroup_ID": {
+        "description": "Read Group ID",
+        "optional": true               
+    },
+    "readGroup_platformName": {
+        "description": "Read Group Platform Name",
+        "optional": true               
+    },
+    "readGroup_PU": {
+        "description": "Read Group PU",
+        "optional": true               
+    },
+    "inputKnownSitesVCF": {
+        "description": "Path to a known indels file. The file must be in vcf.gz format.",
+        "optional": true               
+    },
+    "ecr_registry": {
+        "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com",
+        "optional": false
+    },
+    "aws_region": {
+        "description": "aws region (e.g. us-east-1). must match were source data is located and where workflow is executed",
+        "optional": false
+    }                 
+}

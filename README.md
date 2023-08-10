@@ -5,9 +5,8 @@ This folder contains example WDL based workflows that use Parabricks to run on A
 These are provided AS-IS and are intended to demonstrate conventions, patterns, and best practices for writing workflows for scale. They are intended as starting points that you can customize to fit your specific requirements.
 
 ## Step 0: Assumptions and prerequisites
-- All steps below assume you are working from your `$HOME` directory on a Linux or macOS system and should take ~1hr to complete.
-- Source for the workflows and supporting assets in this example are in `$HOME/amazon-omics-tutorials/example-workflows/gatk-best-practices`
-- Source for the `omx-ecr-helper` CDK app is in `$HOME/amazon-omics-tutorials/utils/cdk/omx-ecr-helper`
+- Source for the workflows and supporting assets in this example are in `parabricks/`
+- Source for the `omx-ecr-helper` CDK app is in `omx-ecr-helper/`
 - The following required software is available on your system
     - [AWS CDK](https://aws.amazon.com/cdk/)
     - [AWS CLI v2](https://aws.amazon.com/cli/)
@@ -18,13 +17,26 @@ These are provided AS-IS and are intended to demonstrate conventions, patterns, 
 
 To install Python package requirements use:
 ```bash
-$HOME/amazon-omics-tutorials/example-workflows/_scripts
+_scripts/
 pip install -r requirements.txt
 ```
 
-## Step 1: Testing
+## Step 1: The Docker environment 
 
-Use the steps below to verify execution of these pipelines AWS HealthOmics as needed. Data for these tests are available in the following regions:
+The Parabricks Docker container is hosted on NVIDIA's NGC repository. To get it into Omics we must pull it from there and place it in an Amazon Elastic Container Repository (ECR). 
+
+```
+# Pull the container from NGC 
+docker pull nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux
+```
+
+Then follow the push commands on ECR to push it to a private repo with the name `<account-id>.dkr.ecr.<region>.amazonaws.com/parabricks:omics`. This repository will be used as an input to the pipeline. 
+
+Note: The container must have this exact name, or the pipeline will not run. 
+
+## Step 2: Testing
+
+Use the steps below to verify execution of these pipelines Amazon Omics as needed. Data for these tests are available in the following regions:
 
 - us-east-1
 - us-west-2
@@ -33,9 +45,9 @@ Use the steps below to verify execution of these pipelines AWS HealthOmics as ne
 - eu-central-1
 - ap-southeast-1
 
-By default, workflow runs will use the region that is configured for the `default` profile via the AWS CLI. You can override this by etting the `region` option in `amazon-omics-tutorials/example-workflows/_conf/default.ini`.
+By default, workflow runs will use the region that is configured for the `default` profile via the AWS CLI. You can override this by editing the `region` option in `_conf/default.ini`.
 
-To run a specific workflow run the following from root of this example set (e.g. at the same location this README file is):
+To run a specific workflow run the following from the `parabricks/` folder: 
 
 ```bash
 make

@@ -27,7 +27,7 @@ The Parabricks Docker container is hosted on NVIDIA's NGC repository. To get it 
 
 ```
 # Pull the container from NGC 
-docker pull nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1
+docker pull nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux
 ```
 
 Then follow the push commands on ECR to push it to a private repo with the name `<account-id>.dkr.ecr.<region>.amazonaws.com/parabricks:omics`. This repository will be used as an input to the pipeline. 
@@ -47,7 +47,7 @@ Use the steps below to verify execution of these pipelines Amazon Omics as neede
 
 By default, workflow runs will use the region that is configured for the `default` profile via the AWS CLI. You can override this by editing the `region` option in `_conf/default.ini`.
 
-To run a specific workflow run the following from root of this example set (e.g. at the same location this README file is):
+To run a specific workflow run the following from the `parabricks/` folder: 
 
 ```bash
 make

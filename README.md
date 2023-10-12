@@ -4,52 +4,39 @@ This folder contains example WDL based workflows that use Parabricks to run on A
 
 These are provided AS-IS and are intended to demonstrate conventions, patterns, and best practices for writing workflows for scale. They are intended as starting points that you can customize to fit your specific requirements.
 
-## Step 0: Assumptions and prerequisites
-- Source for the workflows and supporting assets in this example are in `parabricks/`
-- Source for the `omx-ecr-helper` CDK app is in `omx-ecr-helper/`
-- The following required software is available on your system
-    - [AWS CDK](https://aws.amazon.com/cdk/)
-    - [AWS CLI v2](https://aws.amazon.com/cli/)
-    - [jq](https://stedolan.github.io/jq/)
-    - Python 3.9 or higher
-    - Python packages: see `requirements.txt`
-    - make
+The software pre-requisites needed to build a private workflow for Amazon Omics are packaged as a Dockerfile in this repo. We will first build this Dockerfile, run it, log into the AWS CLI, and then submit jobs to Omics. 
 
-To install Python package requirements use:
-```bash
-_scripts/
-pip install -r requirements.txt
-```
+## Step 1/3: Creating the environment to submit jobs to Omics
 
-## Step 1: The Docker environment 
-
-The Parabricks Docker container is hosted on NVIDIA's NGC repository. To get it into Omics we must pull it from there and place it in an Amazon Elastic Container Repository (ECR). 
+First we will build and run a Docker container on our local machine. To build the Docker container, run the following commands
 
 ```
-# Pull the container from NGC 
-docker pull nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux
+cd dockerfiles
+docker build -t omics-private-workflows . 
 ```
 
-Then follow the push commands on ECR to push it to a private repo with the name `<account-id>.dkr.ecr.<region>.amazonaws.com/parabricks:omics`. This repository will be used as an input to the pipeline. 
+Now we can run the container: 
 
-Note: The container must have this exact name, or the pipeline will not run. 
+```
+docker run --rm -it -v `pwd`:`pwd` -w `pwd` omics-private-workflows /bin/bash 
+```
 
-## Step 2: Testing
+## Step 2/3: Logging into the AWS CLI 
 
-Use the steps below to verify execution of these pipelines Amazon Omics as needed. Data for these tests are available in the following regions:
+To submit jobs to Omics, we must login to the AWS CLI with our preferred credentials. Use the following command to set that up: 
 
-- us-east-1
-- us-west-2
-- eu-west-1
-- eu-west-2
-- eu-central-1
-- ap-southeast-1
+```
+aws configure # Make sure to provide AWS Access Key ID, AWS Secret Access Key, and region
+```
 
-By default, workflow runs will use the region that is configured for the `default` profile via the AWS CLI. You can override this by editing the `region` option in `_conf/default.ini`.
+Now we are ready to build and submit the private workflows 
 
-To run a specific workflow run the following from the `parabricks/` folder: 
+## Step 3/3: Building and submitting jobs to Omics
+
+Use the following commands to first build this repo, and then to build a workflow. The workflow names can be found in the `parabricks/workflows` folder: 
 
 ```bash
+cd parabricks
 make
 make run-{workflow_name}  # substitute "{workflow_name}" accordingly
 ```

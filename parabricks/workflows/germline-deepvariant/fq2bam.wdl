@@ -87,7 +87,7 @@ workflow ClaraParabricks_fq2bam {
 
     }
 
-    String docker = ecr_registry + "/parabricks:omics"
+    String docker = "nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux"
     
     call fq2bam {
         input:

@@ -65,7 +65,7 @@ workflow ClaraParabricks_bam2fq2bam {
         String aws_region
     }
 
-    String docker = ecr_registry + "/parabricks:omics"
+    String docker = "nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux"
 
     ## Run the BAM -> FASTQ conversion
     call bam2fq {

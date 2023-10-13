@@ -65,7 +65,7 @@ workflow ClaraParabricks_Germline {
         String aws_region
     }
 
-    String docker = ecr_registry + "/parabricks:omics"
+    String docker = "nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux"
 
     call ToBam.fq2bam as fq2bam {
         input:

@@ -1,5 +1,5 @@
 {
-  "inputBAM": "s3://omics-{{region}}/sample-inputs/4523502/SRR7890824_5x.bam",
-  "inputBAI": "s3://omics-{{region}}/sample-inputs/4523502/SRR7890824_5x.bai",
+  "inputBAM": "s3://parabricks-sample-data/Data/SRR7890824_5x.bam",
+  "inputBAI": "s3://parabricks-sample-data/Data/SRR7890824_5x.bai",
   "inputRefTarball": "s3://omics-{{region}}/Homo_sapiens_assembly38.fasta.tar"
 }

@@ -105,7 +105,7 @@ workflow ClaraParabricks_somatic {
         String aws_region
     }
 
-    String docker = ecr_registry + "/parabricks:omics"
+    String docker = "nvcr.io/nvidia/clara/clara-parabricks:4.1.1-1.awslinux"
     
     call somatic {
         input:

@@ -1,0 +1,4 @@
+python-on-whales==0.60.0
+PyYAML==6.0
+boto3>=1.26.84
+aws-cdk-lib

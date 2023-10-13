@@ -18,6 +18,7 @@ docker build -t omics-private-workflows .
 Now we can run the container: 
 
 ```
+cd .. 
 docker run --rm -it -v `pwd`:`pwd` -w `pwd` omics-private-workflows /bin/bash 
 ```
 

@@ -3,8 +3,8 @@ version 1.0
 
 task fq2bam {
     input {
-        File inputFASTQ_1
-        File inputFASTQ_2
+        Array[File]+ inputFASTQ_1
+        Array[File]+ inputFASTQ_2
         Boolean? gvcfMode
 
         String readGroup_sampleName = "SAMPLE"
@@ -37,7 +37,8 @@ task fq2bam {
         time tar xf ~{inputRefTarball} && \
         time ~{pbPATH} fq2bam \
         --tmp-dir ~{tmpDir} \
-        --in-fq ~{inputFASTQ_1} ~{inputFASTQ_2} \
+        --in-fq ~{sep(" ", inputFASTQ_1)} \
+        --in-fq ~{sep(" ", inputFASTQ_2)} \
         "@RG\tID:~{rgID}\tLB:~{readGroup_libraryName}\tPL:~{readGroup_platformName}\tSM:~{readGroup_sampleName}\tPU:~{readGroup_PU}" \
         ~{best_practice_args} \
         --ref ~{ref} \
@@ -64,8 +65,8 @@ task fq2bam {
 workflow ClaraParabricks_fq2bam {
 
     input {
-        File inputFASTQ_1
-        File inputFASTQ_2
+        Array[File]+ inputFASTQ_1
+        Array[File]+ inputFASTQ_2
         Boolean? gvcfMode 
 
         String? readGroup_sampleName = "SAMPLE"

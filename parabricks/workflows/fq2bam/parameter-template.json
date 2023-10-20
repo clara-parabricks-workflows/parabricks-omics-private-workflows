@@ -4,11 +4,11 @@
         "optional": false               
     },
     "inputFASTQ_1": {
-        "description": "Path to the first pair-ended FASTQ file",
+        "description": "An array of the first set of pair-ended FASTQ file",
         "optional": false               
     },
     "inputFASTQ_2": {
-        "description": "Path to the second pair-ended FASTQ file",
+        "description": "An array of the second set of pair-ended FASTQ file",
         "optional": false               
     },
     "gvcfMode": {

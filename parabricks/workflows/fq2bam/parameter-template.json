@@ -1,10 +1,10 @@
 {
-    "inputRefTarball": {
-        "description": "Path to the reference tarball",
-        "optional": false               
-    },
     "fastq_pairs": {
         "description": "A list of structs containing fastq pairs and read groups. The struct field names are: fastq_1, fastq_2, and read_group.",
+        "optional": false               
+    },
+    "inputRefTarball": {
+        "description": "Path to the reference tarball",
         "optional": false               
     },
     "inputKnownSitesVCF": {

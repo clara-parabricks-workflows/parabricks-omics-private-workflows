@@ -21,14 +21,18 @@ task parse_inputs {
     }
 
     output {
-        String command_line = read_lines(stdout())[-1]
+        String command_line = read_lines(stdout())[0]
     }
 
     runtime {
         docker: docker
-        cpu: 4
-        memory: "8 GiB"
     }
+
+    # runtime {
+    #     docker: docker
+    #     cpu: 4
+    #     memory: "8 GiB"
+    # }
 }
 
 task fq2bam {
@@ -52,13 +56,13 @@ task fq2bam {
         set -o pipefail
         mkdir -p ~{tmpDir} && \
         time tar xf ~{inputRefTarball} && \
-        time ~{pbPATH} fq2bam \
+        time pbrun fq2bam \
         --tmp-dir ~{tmpDir} \
         ~{sep=" " fastq_command_line} \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + outbase + ".pb.BQSR-REPORT.txt"} \
         --out-bam ~{outbase}.pb.bam \
-        --low-memory
+        --low-memory --x3
     }
 
     output {
@@ -69,11 +73,15 @@ task fq2bam {
 
     runtime {
         docker: docker
-        acceleratorType: "nvidia-tesla-t4"
-        acceleratorCount: 4
-        cpu: 48
-        memory: "192 GiB"
     }
+
+    # runtime {
+    #     docker: docker
+    #     acceleratorType: "nvidia-tesla-t4"
+    #     acceleratorCount: 4
+    #     cpu: 48
+    #     memory: "192 GiB"
+    # }
 }
 
 workflow ClaraParabricks_fq2bam {
@@ -81,11 +89,12 @@ workflow ClaraParabricks_fq2bam {
     input {
         Array[FastqPair] fastq_pairs
 
-        File? inputKnownSitesVCF
         File inputRefTarball
+        File? inputKnownSitesVCF
 
         String docker = "nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1"
 
+        # TODO: Can I get rid of these?? 
         String ecr_registry
         String aws_region
 

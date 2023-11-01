@@ -12,6 +12,7 @@ struct FastqPair {
 task parse_inputs {
     input {
         FastqPair fq_pair
+        String docker = "public.ecr.aws/amazonlinux/amazonlinux:minimal"
     }
 
     command {
@@ -20,11 +21,11 @@ task parse_inputs {
     }
 
     output {
-        String command_line = read_lines(stdout())
+        String command_line = read_lines(stdout())[-1]
     }
 
     runtime {
-        docker: "public.ecr.aws/amazonlinux/amazonlinux:minimal"
+        docker: docker
         cpu: 4
         memory: "8 GiB"
     }
@@ -38,12 +39,10 @@ task fq2bam {
         File? inputKnownSitesVCF
         File inputRefTarball
 
-        String pbPATH = "pbrun"
-        String tmpDir = "tmp_fq2bam"
-
         String docker
     }
 
+    String tmpDir = "tmp_fq2bam"
     String ref = basename(inputRefTarball, ".tar")
     String outbase = basename(basename(basename(basename(fastq_pairs[0].fastq_1, ".gz"), ".fastq"), ".fq"), "_1")
 
@@ -85,15 +84,12 @@ workflow ClaraParabricks_fq2bam {
         File? inputKnownSitesVCF
         File inputRefTarball
 
-        String pbPATH = "pbrun"
-        String tmpDir = "tmp_fq2bam"
+        String docker = "nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1"
 
         String ecr_registry
         String aws_region
 
     }
-
-    String docker = "nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1"
     
     scatter (fq_pair in fastq_pairs){
         call parse_inputs {
@@ -108,8 +104,6 @@ workflow ClaraParabricks_fq2bam {
             fastq_command_line=parse_inputs.command_line,
             inputKnownSitesVCF=inputKnownSitesVCF,
             inputRefTarball=inputRefTarball,
-            pbPATH=pbPATH,
-            tmpDir=tmpDir,
             docker=docker
     }
 

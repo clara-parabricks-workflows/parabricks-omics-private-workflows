@@ -17,13 +17,15 @@ task parse_inputs {
 
     command {
         set -e
-        echo "--in-fq ~{fq_pair.fastq_1} ~{fq_pair.fastq_2} ~{fq_pair.read_group}"
     }
 
     output {
-        String command_line = read_lines(stdout())[0]
+        File fastq_1_wdl_arr = fq_pair.fastq_1
+        File fastq_2_wdl_arr = fq_pair.fastq_2
+        String rg_wdl_arr = fq_pair.read_group
     }
 
+    # TODO: Does this need to run in Docker even? Any local machine can run echo... 
     runtime {
         docker: docker
     }
@@ -37,8 +39,9 @@ task parse_inputs {
 
 task fq2bam {
     input {
-        Array[FastqPair] fastq_pairs
-        Array[String] fastq_command_line
+        Array[File] fastq_1_wdl_arr
+        Array[File] fastq_2_wdl_arr
+        Array[String] rg_wdl_arr
 
         File? inputKnownSitesVCF
         File inputRefTarball
@@ -48,22 +51,30 @@ task fq2bam {
 
     String tmpDir = "tmp_fq2bam"
     String ref = basename(inputRefTarball, ".tar")
-    String outbase = basename(basename(basename(basename(fastq_pairs[0].fastq_1, ".gz"), ".fastq"), ".fq"), "_1")
+    String outbase = basename(basename(basename(basename(fastq_1_wdl_arr[0], ".gz"), ".fastq"), ".fq"), "_1")
 
-    command {
+    Int num_fq_pairs = length(fastq_1_wdl_arr)
+    String fq_list = "in_fq_list.txt"
+
+    command <<<
         set -e
         set -x
-        set -o pipefail
+        set -o pipefail 
+        fastq_1_bash_arr=(~{sep=" " fastq_1_wdl_arr})
+        fastq_2_bash_arr=(~{sep=" " fastq_2_wdl_arr})
+        rg_bash_arr=(~{sep=" " rg_wdl_arr})
+        for ((c=0; c<~{num_fq_pairs}; c++)); do echo "${fastq_1_bash_arr[$c]} ${fastq_2_bash_arr[$c]} ${rg_bash_arr[$c]}" >> in_fq_list.txt ; done ;
+        cat in_fq_list.txt
         mkdir -p ~{tmpDir} && \
         time tar xf ~{inputRefTarball} && \
         time pbrun fq2bam \
         --tmp-dir ~{tmpDir} \
-        ~{sep=" " fastq_command_line} \
+        --in-fq-list in_fq_list.txt \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + outbase + ".pb.BQSR-REPORT.txt"} \
         --out-bam ~{outbase}.pb.bam \
         --low-memory --x3
-    }
+    >>>
 
     output {
         File outputBAM = "~{outbase}.pb.bam"
@@ -109,8 +120,9 @@ workflow ClaraParabricks_fq2bam {
 
     call fq2bam {
         input:
-            fastq_pairs=fastq_pairs,
-            fastq_command_line=parse_inputs.command_line,
+            fastq_1_wdl_arr=parse_inputs.fastq_1_wdl_arr,
+            fastq_2_wdl_arr=parse_inputs.fastq_2_wdl_arr, 
+            rg_wdl_arr=parse_inputs.rg_wdl_arr,
             inputKnownSitesVCF=inputKnownSitesVCF,
             inputRefTarball=inputRefTarball,
             docker=docker

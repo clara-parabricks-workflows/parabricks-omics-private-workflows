@@ -48,13 +48,11 @@ task fq2bam {
 
         String docker
     }
-
+ 
     String tmpDir = "tmp_fq2bam"
     String ref = basename(inputRefTarball, ".tar")
     String outbase = basename(basename(basename(basename(fastq_1_wdl_arr[0], ".gz"), ".fastq"), ".fq"), "_1")
-
     Int num_fq_pairs = length(fastq_1_wdl_arr)
-    String fq_list = "in_fq_list.txt"
 
     command <<<
         set -e
@@ -62,9 +60,15 @@ task fq2bam {
         set -o pipefail 
         fastq_1_bash_arr=(~{sep=" " fastq_1_wdl_arr})
         fastq_2_bash_arr=(~{sep=" " fastq_2_wdl_arr})
-        rg_bash_arr=(~{sep=" " rg_wdl_arr})
-        for ((c=0; c<~{num_fq_pairs}; c++)); do echo "${fastq_1_bash_arr[$c]} ${fastq_2_bash_arr[$c]} ${rg_bash_arr[$c]}" >> in_fq_list.txt ; done ;
-        cat in_fq_list.txt
+        rg_bash_arr=('~{sep="' '" rg_wdl_arr}') 
+        # DEBUG
+        # echo "${#rg_bash_arr[*]}"
+        # echo "${rg_bash_arr[*]}"
+        # echo ${rg_bash_arr[*]}
+        # printf '%s\n' "${rg_bash_arr[*]}"
+        # printf '%s\n' ${rg_bash_arr[*]}
+        # END DEBUG 
+        for ((c=0; c<~{num_fq_pairs}; c++)); do printf '%s\n' "${fastq_1_bash_arr[$c]} ${fastq_2_bash_arr[$c]} ${rg_bash_arr[$c]}" >> in_fq_list.txt ; done ;
         mkdir -p ~{tmpDir} && \
         time tar xf ~{inputRefTarball} && \
         time pbrun fq2bam \

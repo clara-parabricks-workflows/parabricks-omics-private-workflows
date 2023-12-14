@@ -88,15 +88,11 @@ task fq2bam {
 
     runtime {
         docker: docker
+        acceleratorType: "nvidia-tesla-t4"
+        acceleratorCount: 4
+        cpu: 48
+        memory: "192 GiB"
     }
-
-    # runtime {
-    #     docker: docker
-    #     acceleratorType: "nvidia-tesla-t4"
-    #     acceleratorCount: 4
-    #     cpu: 48
-    #     memory: "192 GiB"
-    # }
 }
 
 workflow ClaraParabricks_fq2bam {

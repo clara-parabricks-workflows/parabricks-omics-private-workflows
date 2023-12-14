@@ -11,9 +11,9 @@
         "description": "Path to a known indels file. The file must be in vcf.gz format.",
         "optional": true               
     },
-    "docker": {
-        "description": "The docker image to use to run this pipeline. ",
-        "optional": true
+    "pb_version": {
+        "description": "The Parabricks version.",
+        "optional": false
     },
     "ecr_registry": {
         "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com)",

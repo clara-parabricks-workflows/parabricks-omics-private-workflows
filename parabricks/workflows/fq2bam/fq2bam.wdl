@@ -12,7 +12,7 @@ struct FastqPair {
 task parse_inputs {
     input {
         FastqPair fq_pair
-        String docker = "public.ecr.aws/amazonlinux/amazonlinux:minimal"
+        String docker
     }
 
     command {
@@ -107,18 +107,20 @@ workflow ClaraParabricks_fq2bam {
         File inputRefTarball
         File? inputKnownSitesVCF
 
-        String docker = "nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1"
+        String pb_version
 
-        # TODO: Can I get rid of these?? 
         String ecr_registry
         String aws_region
 
     }
-    
+
+    String docker = ecr_registry + "/parabricks:" + pb_version
+
     scatter (fq_pair in fastq_pairs){
         call parse_inputs {
             input: 
-                fq_pair=fq_pair
+                fq_pair=fq_pair,
+                docker=docker
         }
     }
 

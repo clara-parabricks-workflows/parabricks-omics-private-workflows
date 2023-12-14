@@ -12,6 +12,8 @@ Amazon Omics requires that any Docker containers that we use are inside of a pri
 
 Create a private ECR repo and name it "parabricks". This is easiest to do in the AWS console using [these instructions](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html).  
 
+Make sure that Omics has permissions to access this ECR repo by editing the Policy JSON according to instructions in the [AWS Docs](https://docs.aws.amazon.com/omics/latest/dev/permissions-resource.html#permissions-resource-ecr). 
+
 Then on the command line, log in to ECR using: 
 
 ```

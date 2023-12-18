@@ -1,50 +1,84 @@
 version 1.0
 # Copyright 2021 NVIDIA CORPORATION & AFFILIATES
 
-task fq2bam {
+struct FastqPair {
+    File fastq_1
+    File fastq_2
+    String read_group
+}
+
+# Concatenate the fq pairs and read group to a command line
+# that can be directly fed into the pbrun command 
+task parse_inputs {
     input {
-        File inputFASTQ_1
-        File inputFASTQ_2
-        Boolean? gvcfMode
-
-        String readGroup_sampleName = "SAMPLE"
-        String readGroup_libraryName = "LIB1"
-        String readGroup_ID = "RG1"
-        String readGroup_platformName = "ILLUMINA"
-        String readGroup_PU = "unit1"
-
-        File? inputKnownSitesVCF
-        Boolean use_best_practices = false
-
-        File inputRefTarball
-
-        String? pbPATH = "pbrun"
-        String? tmpDir = "tmp_fq2bam"
-
+        FastqPair fq_pair
         String docker
     }
 
-    String best_practice_args = if use_best_practices then "--bwa-options \" -Y -K 100000000 \" " else ""
-    String rgID = if readGroup_sampleName == "SAMPLE" then readGroup_ID else readGroup_sampleName + "-" + readGroup_ID
-    String ref = basename(inputRefTarball, ".tar")
-    String outbase = basename(basename(basename(basename(inputFASTQ_1, ".gz"), ".fastq"), ".fq"), "_1")
-
     command {
         set -e
+    }
+
+    output {
+        File fastq_1_wdl_arr = fq_pair.fastq_1
+        File fastq_2_wdl_arr = fq_pair.fastq_2
+        String rg_wdl_arr = fq_pair.read_group
+    }
+
+    # TODO: Does this need to run in Docker even? Any local machine can run echo... 
+    runtime {
+        docker: docker
+    }
+
+    # runtime {
+    #     docker: docker
+    #     cpu: 4
+    #     memory: "8 GiB"
+    # }
+}
+
+task fq2bam {
+    input {
+        Array[File] fastq_1_wdl_arr
+        Array[File] fastq_2_wdl_arr
+        Array[String] rg_wdl_arr
+
+        File? inputKnownSitesVCF
+        File inputRefTarball
+
+        String docker
+    }
+ 
+    String tmpDir = "tmp_fq2bam"
+    String ref = basename(inputRefTarball, ".tar")
+    String outbase = basename(basename(basename(basename(fastq_1_wdl_arr[0], ".gz"), ".fastq"), ".fq"), "_1")
+    Int num_fq_pairs = length(fastq_1_wdl_arr)
+
+    command <<<
+        set -e
         set -x
-        set -o pipefail
+        set -o pipefail 
+        fastq_1_bash_arr=(~{sep=" " fastq_1_wdl_arr})
+        fastq_2_bash_arr=(~{sep=" " fastq_2_wdl_arr})
+        rg_bash_arr=('~{sep="' '" rg_wdl_arr}') 
+        # DEBUG
+        # echo "${#rg_bash_arr[*]}"
+        # echo "${rg_bash_arr[*]}"
+        # echo ${rg_bash_arr[*]}
+        # printf '%s\n' "${rg_bash_arr[*]}"
+        # printf '%s\n' ${rg_bash_arr[*]}
+        # END DEBUG 
+        for ((c=0; c<~{num_fq_pairs}; c++)); do printf '%s\n' "${fastq_1_bash_arr[$c]} ${fastq_2_bash_arr[$c]} ${rg_bash_arr[$c]}" >> in_fq_list.txt ; done ;
         mkdir -p ~{tmpDir} && \
         time tar xf ~{inputRefTarball} && \
-        time ~{pbPATH} fq2bam \
+        time pbrun fq2bam \
         --tmp-dir ~{tmpDir} \
-        --in-fq ~{inputFASTQ_1} ~{inputFASTQ_2} \
-        "@RG\tID:~{rgID}\tLB:~{readGroup_libraryName}\tPL:~{readGroup_platformName}\tSM:~{readGroup_sampleName}\tPU:~{readGroup_PU}" \
-        ~{best_practice_args} \
+        --in-fq-list in_fq_list.txt \
         --ref ~{ref} \
         ~{"--knownSites " + inputKnownSitesVCF + " --out-recal-file " + outbase + ".pb.BQSR-REPORT.txt"} \
         --out-bam ~{outbase}.pb.bam \
-        --low-memory
-    }
+        --low-memory --x3
+    >>>
 
     output {
         File outputBAM = "~{outbase}.pb.bam"
@@ -57,53 +91,42 @@ task fq2bam {
         acceleratorType: "nvidia-tesla-t4"
         acceleratorCount: 4
         cpu: 48
-        memory: "192GB"
+        memory: "192 GiB"
     }
 }
 
 workflow ClaraParabricks_fq2bam {
 
     input {
-        File inputFASTQ_1
-        File inputFASTQ_2
-        Boolean? gvcfMode 
-
-        String? readGroup_sampleName = "SAMPLE"
-        String? readGroup_libraryName = "LIB1"
-        String? readGroup_ID = "RG1"
-        String? readGroup_platformName = "ILMN"
-        String? readGroup_PU = "Barcode1"
-
-        File? inputKnownSitesVCF
-        Boolean? use_best_practices
+        Array[FastqPair] fastq_pairs
 
         File inputRefTarball
+        File? inputKnownSitesVCF
 
-        String pbPATH = "pbrun"
-        String tmpDir = "tmp_fq2bam"
+        String pb_version
 
         String ecr_registry
         String aws_region
 
     }
 
-    String docker = "nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1"
-    
+    String docker = ecr_registry + "/parabricks:" + pb_version
+
+    scatter (fq_pair in fastq_pairs){
+        call parse_inputs {
+            input: 
+                fq_pair=fq_pair,
+                docker=docker
+        }
+    }
+
     call fq2bam {
         input:
-            inputFASTQ_1=inputFASTQ_1,
-            inputFASTQ_2=inputFASTQ_2,
-            gvcfMode=gvcfMode,
-            readGroup_sampleName=readGroup_sampleName,
-            readGroup_libraryName=readGroup_libraryName,
-            readGroup_ID=readGroup_ID,
-            readGroup_platformName=readGroup_platformName,
-            readGroup_PU=readGroup_PU,
+            fastq_1_wdl_arr=parse_inputs.fastq_1_wdl_arr,
+            fastq_2_wdl_arr=parse_inputs.fastq_2_wdl_arr, 
+            rg_wdl_arr=parse_inputs.rg_wdl_arr,
             inputKnownSitesVCF=inputKnownSitesVCF,
-            use_best_practices=use_best_practices,
             inputRefTarball=inputRefTarball,
-            pbPATH=pbPATH,
-            tmpDir=tmpDir,
             docker=docker
     }
 

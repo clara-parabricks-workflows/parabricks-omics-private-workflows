@@ -1,5 +1,16 @@
 {
-  "inputFASTQ_1": "s3://parabricks-sample-data/Data/HG002-NA24385-pFDA_S2_L002_R1_001-5x.fastq.gz",
-  "inputFASTQ_2": "s3://parabricks-sample-data/Data/HG002-NA24385-pFDA_S2_L002_R2_001-5x.fastq.gz",
-  "inputRefTarball": "s3://omics-{{region}}/Homo_sapiens_assembly38.fasta.tar"
+  "fastq_pairs": [
+    {
+      "fastq_1": "s3://parabricks-sample-data/Data/HG002-NA24385-pFDA_S2_L002_R1_001-5x.fastq.gz",
+      "fastq_2": "s3://parabricks-sample-data/Data/HG002-NA24385-pFDA_S2_L002_R2_001-5x.fastq.gz",
+      "read_group": "@RG\\tID:sample_rg1\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:sample_rg1"
+    },
+    {
+      "fastq_1": "s3://parabricks-sample-data/Data/HG002-NA24385-pFDA_S2_L002_R1_001-5x.fastq.gz",
+      "fastq_2": "s3://parabricks-sample-data/Data/HG002-NA24385-pFDA_S2_L002_R2_001-5x.fastq.gz",
+      "read_group": "@RG\\tID:sample_rg1\\tLB:lib1\\tPL:bar\\tSM:sample\\tPU:sample_rg1"
+    }
+  ],
+  "inputRefTarball": "s3://omics-{{region}}/Homo_sapiens_assembly38.fasta.tar", 
+  "pb_version": "4.1.1-1"
 }

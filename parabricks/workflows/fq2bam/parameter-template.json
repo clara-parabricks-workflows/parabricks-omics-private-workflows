@@ -1,48 +1,20 @@
 {
+    "fastq_pairs": {
+        "description": "A list of structs containing fastq pairs and read groups. The struct field names are: fastq_1, fastq_2, and read_group.",
+        "optional": false               
+    },
     "inputRefTarball": {
         "description": "Path to the reference tarball",
         "optional": false               
-    },
-    "inputFASTQ_1": {
-        "description": "Path to the first pair-ended FASTQ file",
-        "optional": false               
-    },
-    "inputFASTQ_2": {
-        "description": "Path to the second pair-ended FASTQ file",
-        "optional": false               
-    },
-    "gvcfMode": {
-        "description": "Generate variant calls in .gvcf format",
-        "optional": true               
-    },
-    "readGroup_sampleName": {
-        "description": "Read Group Sample Name",
-        "optional": true               
-    },
-    "readGroup_libraryName": {
-        "description": "Read Group Library Name",
-        "optional": true               
-    },
-    "readGroup_ID": {
-        "description": "Read Group ID",
-        "optional": true               
-    },
-    "readGroup_platformName": {
-        "description": "Read Group Platform Name",
-        "optional": true               
-    },
-    "readGroup_PU": {
-        "description": "Read Group PU",
-        "optional": true               
     },
     "inputKnownSitesVCF": {
         "description": "Path to a known indels file. The file must be in vcf.gz format.",
         "optional": true               
     },
-    "use_best_practices": {
-        "description": "Uses best practices BWA options (--bwa-options -Y -K 100000000)",
-        "optional": true               
-    }, 
+    "pb_version": {
+        "description": "The Parabricks version.",
+        "optional": false
+    },
     "ecr_registry": {
         "description": "ecr registry for container images (e.g. <account-id>.dkr.ecr.<region>.amazonaws.com)",
         "optional": false

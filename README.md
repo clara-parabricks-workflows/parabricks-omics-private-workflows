@@ -6,7 +6,7 @@ These are provided AS-IS and are intended to demonstrate conventions, patterns, 
 
 The software pre-requisites needed to build a private workflow for Amazon Omics are packaged as a Dockerfile in this repo. We will first build this Dockerfile, run it, log into the AWS CLI, and then submit jobs to Omics. 
 
-## Step 0/3: Creating private ECR repos for our workflow containers
+## Step 0/4: Creating private ECR repos for our workflow containers
 
 Amazon Omics requires that any Docker containers that we use are inside of a private Elastic Container Repository (ECR). For this example we will be using a public Parabricks container, so we must move it into a private ECR repo. 
 
@@ -23,26 +23,26 @@ aws ecr get-login-password --region <region> | docker login --username AWS --pas
 Pull the latest Parabricks Amazon Linux image using: 
 
 ``` 
-docker pull nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1
+docker pull nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:<version>
 ```
 
 Tag the image to get it ready for ECR: 
 
 ```
-docker tag nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:4.1.1-1 <aws_account_id>.dkr.ecr.<region>.amazonaws.com/parabricks:4.1.1-1
+docker tag nvcr.io/nvidia/clara/nvidia_clara_parabricks_amazon_linux:<version> <aws_account_id>.dkr.ecr.<region>.amazonaws.com/parabricks:<version>
 ```
 
 Finally, push this image to your private ECR repo: 
 
 ```
-docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/parabricks:4.1.1-1
+docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/parabricks:<version>
 ```
 
 Now we have our Parabricks docker image in a place where Amazon Omics can see it. 
 
 For troubleshoot help, please see the [Amazon docs on pushing to ECR repos](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html). 
 
-## Step 1/3: Creating the environment to submit jobs to Omics
+## Step 1/4: Creating the environment to submit jobs to Omics
 
 First we will build and run a Docker container on our local machine. To build the Docker container, run the following commands
 
@@ -58,7 +58,7 @@ cd ..
 docker run --rm -it -v `pwd`:`pwd` -w `pwd` omics-private-workflows /bin/bash 
 ```
 
-## Step 2/3: Logging into the AWS CLI 
+## Step 2/4: Logging into the AWS CLI 
 
 To submit jobs to Omics, we must login to the AWS CLI with our preferred credentials. Use the following command to set that up: 
 
@@ -68,7 +68,20 @@ aws configure # Make sure to provide AWS Access Key ID, AWS Secret Access Key, a
 
 Now we are ready to build and submit the private workflows 
 
-## Step 3/3: Building and submitting jobs to Omics
+## Step 3/4: Updating paths to data and the Parabricks version
+
+Update the `test.parameters.json` file for the workflow that you plan to run. Each workflow has its own copy of this file at: 
+
+```
+parabricks/workflows/<workflow-name>/test.parameters.json
+```
+
+
+In this file, make sure that the paths to the data point to S3 buckets that you have access to, and update the `pb_version` to match the docker image tag for the Parabricks image you loaded into ECR. 
+
+## Step 4/4: Building and submitting jobs to Omics
+
+Now we are ready to build any Parabricks workflow!
 
 Use the following commands to first build this repo, and then to build a workflow. The workflow names can be found in the `parabricks/workflows` folder: 
 

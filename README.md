@@ -1,14 +1,14 @@
-# Private Parabricks Workflows for Amazon Omics
+# Private Parabricks Workflows for AWS HealthOmics
 
-This folder contains example WDL based workflows that use Parabricks to run on Amazon Omics.
+This folder contains example WDL based workflows that use Parabricks to run on AWS HealthOmics.
 
 These are provided AS-IS and are intended to demonstrate conventions, patterns, and best practices for writing workflows for scale. They are intended as starting points that you can customize to fit your specific requirements.
 
-The software pre-requisites needed to build a private workflow for Amazon Omics are packaged as a Dockerfile in this repo. We will first build this Dockerfile, run it, log into the AWS CLI, and then submit jobs to Omics. 
+The software pre-requisites needed to build a private workflow for AWS HealthOmics are packaged as a Dockerfile in this repo. We will first build this Dockerfile, run it, log into the AWS CLI, and then submit jobs to Omics. 
 
 ## Step 0/4: Creating private ECR repos for our workflow containers
 
-Amazon Omics requires that any Docker containers that we use are inside of a private Elastic Container Repository (ECR). For this example we will be using a public Parabricks container, so we must move it into a private ECR repo. 
+AWS HealthOmics requires that any Docker containers that we use are inside of a private Elastic Container Repository (ECR). For this example we will be using a public Parabricks container, so we must move it into a private ECR repo. 
 
 Create a private ECR repo and name it "parabricks". This is easiest to do in the AWS console using [these instructions](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html).  
 
@@ -38,7 +38,7 @@ Finally, push this image to your private ECR repo:
 docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/parabricks:<version>
 ```
 
-Now we have our Parabricks docker image in a place where Amazon Omics can see it. 
+Now we have our Parabricks docker image in a place where AWS HealthOmics can see it. 
 
 For troubleshoot help, please see the [Amazon docs on pushing to ECR repos](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html). 
 
